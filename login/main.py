@@ -125,7 +125,7 @@ def test_len(inp, text_input):
 def submit():
     loading_ = True
     # test input
-    if not Mail == '' and Name == '':
+    if Mail != '' and Name != '':
         if '@' in Mail:
             print(Mail, '##')
             loading_ = False
