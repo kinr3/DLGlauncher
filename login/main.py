@@ -1,9 +1,10 @@
-from Objects import *
-from text_input import *
 import pygame
 import os
 import time
 import sys
+from py_lau_scripts.requestsPy import Data
+from Objects import *
+from text_input import *
 from pygame.locals import *
 pygame.init()
 pygame.font.init()
@@ -123,12 +124,16 @@ def test_len(inp, text_input):
 
 
 def submit():
+    global t
     loading_ = True
     # test input
-    if Mail != '' and Name != '':
+    if Mail != '' and PASS_l != '':
         if '@' in Mail:
-            print(Mail, '##')
-            loading_ = False
+            if time.time() - t >= 0.3:
+                t = time.time()
+                print(Mail, '##')
+                loading_ = False
+                print(data.log_in(Mail1, PASS_l))
 
     else:
         pass
@@ -137,12 +142,19 @@ def submit():
 
 
 def submit_reg():
+    global t
     loading = True
     # test input
     if Mail1 != '' and Name1 != '' and Name2 != '' and PASS != '':
         if '@' in Mail1:
-            print(Mail1, Name1, Name1)
-            loading = False
+            if time.time() - t >= 0.3:
+                t = time.time()
+                print(Mail1, Name1, Name2)
+                loading = False
+                name = Name1+'_'+Name2
+                mail = Mail1
+                pwd = PASS
+                print(data.new_acc(name, mail, pwd))
 
     else:
         pass
@@ -152,7 +164,7 @@ def submit_reg():
 
 
 def register():
-    global Mail1, Name1, Name2, PASS
+    global Mail1, Name1, Name2, PASS, t
     t = time.time()
     i = 0
     Mail1 = ''
@@ -235,7 +247,7 @@ def register():
                     Name2 = text_name2.get_text()
                     PASS = text_pass1.get_text()
                     error = submit_reg()
-                    load = submit_reg()
+                    load = error
                 if Login_.g_rect().colliderect(mouse_.mouse_get_rect(mouse)):
                     register_true = False
                     text_name1.clear_text()
@@ -261,6 +273,8 @@ def register():
         '#Bg'
         screen.fill((0, 0, 0))
         bg.show(size, 1)
+        '# text'
+        text.show(online, (1100, 10), (255, 255, 255), 25)
         # pygame.draw.rect(screen, (200, 0, 0), (dpa.pro_to_pix(strt), (dpa.pro_to_pix((xy))))) # red bpx
         '#checkbox'
         if checkbox_usk.mode['py']:
@@ -328,11 +342,11 @@ def register():
 
 
 def launcher():
-    global Mail, Name
+    global Mail, PASS_l, online, t
     t = time.time()
     i = 0
     Mail = ''
-    Name = ''
+    PASS_l = ''
     load = submit()
     pdw = '**************************************************'
     launcher_true = True
@@ -380,7 +394,7 @@ def launcher():
                     os.system('start http://dreamlifegames.com/')
                 if Submit_.g_rect().colliderect(mouse_.mouse_get_rect(mouse)):
                     error = submit()
-                    load = submit()
+                    load = error
                 if Register_.g_rect().colliderect(mouse_.mouse_get_rect(mouse)):
                     launcher_true = False
                     text_name.clear_text()
@@ -406,6 +420,8 @@ def launcher():
         '#Bg'
         screen.fill((0, 0, 0))
         bg.show(size)
+        '# text'
+        text.show(online, (1100, 10), (255, 255, 255), 25)
         # pygame.draw.rect(screen, (200, 0, 0), (dpa.pro_to_pix(strt), (dpa.pro_to_pix((xy))))) # hit
         '#checkbox'
         if checkbox.mode['py']:
@@ -418,13 +434,13 @@ def launcher():
                 text_mail.cursor_visible = False
                 if text_name.update(events):
                     Mail = text_mail.get_text()
-                    Name = text_name.get_text()
+                    PASS_l = text_name.get_text()
                     error = submit()
                     load = submit()
         else:
             if text_name.max_list(events):
                 Mail = text_mail.get_text()
-                Name = text_name.get_text()
+                PASS_l = text_name.get_text()
                 error = submit()
                 load = submit()
         if Mail_.mode['s_l_a']:
@@ -456,6 +472,9 @@ def launcher():
 # pygame.draw.rect(screen,(200,0,0),(dpa.pro_to_pix((60.16, 85.00)), (dpa.pro_to_pix((11, 3)))))
 
 
-launcher()
-pygame.quit()
-sys.exit()
+if __name__ == '__main__':
+    data = Data('http://127.0.0.1', '4456')
+    online = data.first_start()
+    launcher()
+    pygame.quit()
+    sys.exit()
