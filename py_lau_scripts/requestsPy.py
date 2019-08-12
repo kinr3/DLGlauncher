@@ -1,4 +1,5 @@
 import requests
+from flask import jsonify
 
 
 class Data:
@@ -19,9 +20,9 @@ class Data:
         return self.error
 
     def new_acc(self, name, mail, pwd):
-        massage = [name, mail, pwd]
+        massage = jsonify([name, mail, pwd])
         print(massage)
-        self.response = requests.post(self.web+':'+self.port+'/new', params=massage) #json,parameters
+        self.response = requests.post(self.web+':'+self.port+'/new', json=massage) #json,parameters
         return self.response
 
     def log_in(self, mail, pwd):

@@ -82,5 +82,6 @@ def hashlib_data(data):
 if __name__ == '__main__':
 	has = hashlib.sha512()
 	database = DataSQL()
+
 	#print(database.execute('new_acc', ('test', 'test@test', hashlib_data('test123'))))
 	app.run(host='127.0.0.1', debug=False, port=4456)

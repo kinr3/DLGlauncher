@@ -2,18 +2,19 @@ import pygame
 import os
 import time
 import sys
-from py_lau_scripts.requestsPy import Data
+import time
 from Objects import *
 from text_input import *
 from pygame.locals import *
+from py_lau_scripts.client import Connection
 pygame.init()
 pygame.font.init()
 display_width = 1280
 display_height = 720
-screen = pygame.display.set_mode((display_width, display_height), HWSURFACE | DOUBLEBUF | NOFRAME, 32)
+screen = pygame.display.set_mode((display_width, display_height), HWSURFACE | DOUBLEBUF, 32)
 os.environ["SDL_VIDEO_CENTERED"] = "1"
 pygame.display.set_caption('launcher')
-
+os.system('cls')
 '---------------FPS-----------------'
 fps = pygame.time.Clock()
 FPS = 20
@@ -111,7 +112,7 @@ text_name1 = TextInput()
 text_name_pos1 = (dpa.pro_to_pix((30.53, 25.94)))
 text_name2 = TextInput()
 text_name_pos2 = (dpa.pro_to_pix((53.50, 25.81)))
-text_pass1 = TextInput(cursor_color=(0, 0, 0))
+text_pass1 = TextInput(cursor_color=(255, 255, 255))
 text_pass1_pos = (dpa.pro_to_pix((41.62, 49.68)))
 
 
@@ -348,7 +349,7 @@ def launcher():
     Mail = ''
     PASS_l = ''
     load = submit()
-    pdw = '**************************************************'
+    pdw = '***************************'
     launcher_true = True
     error = False
     size = (display_width, display_height)
@@ -473,8 +474,30 @@ def launcher():
 
 
 if __name__ == '__main__':
-    data = Data('http://127.0.0.1', '4456')
-    online = data.first_start()
+    os.system('CD')
+    time.sleep(11)
+    ver = 1
+    c_data = Connection()
+    try:
+        c_data.test_version(ver)
+    except OSError as os_error:
+        pass
+    t = 2
+    tim = time.time()
+    while not c_data.msg:
+        print('starting in t-: ' + str(time.time() - tim))
+        os.system('cls')
+        if time.time() - tim > 10:
+            pass
+
+    if not c_data.msg['had']:
+        print('updata')
+        t = 20
+        file = open('lau.zip', 'ab')
+        file.write(c_data.msg['zip'])
+        file.close()
+    os.system("python start.py " + str(t))
+    online = c_data.online
     launcher()
     pygame.quit()
     sys.exit()
