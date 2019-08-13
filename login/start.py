@@ -4,6 +4,7 @@ import os
 import sys
 import time
 from pygame.locals import *
+ts = int(sys.argv[1])
 pygame.init()
 pygame.font.init()
 display_width = 500
@@ -14,7 +15,7 @@ t = time.time()
 
 '---------------FPS-----------------'
 fps = pygame.time.Clock()
-FPS = 30
+FPS = 400
 '---------------text---------------'
 text = Text(screen)
 
@@ -33,6 +34,7 @@ def start():
     i = 0
     txt = 'STARTING'
     start_true = True
+    t1 = time.time()
     while start_true:
         pygame.display.set_caption("Launcher. FPS: %.2f" % (fps.get_fps()))
         for event in pygame.event.get():
@@ -40,7 +42,6 @@ def start():
                 pass
             if event.type == 6:
                 start_true = False
-                os.system('python main.py')
                 pygame.quit()
                 sys.exit()
             if event.type == 12:
@@ -53,36 +54,36 @@ def start():
         '#Bg'
         screen.fill((138, 138, 138))
         bg.show((display_width, display_height), 0)
-        if time.time() - t > 18:
+        if time.time() - t > ts:
             start_true = False
-            os.system('python main.py')
             pygame.quit()
             sys.exit()
-        if time.time() - t > 0.8:
+        if time.time() - t1 >= ts/490:
+            t1 = time.time()
             i += 1
         pygame.draw.rect(screen, (255, 255, 255), (0, 490, i, 10))
         '#txt'
-        if not time.time() - t > 2:
+        if not time.time() - t > ts*0.1:
             txt = 'CHECKING FOR UPDATES.'
-        elif not time.time() - t > 4:
+        elif not time.time() - t > ts*0.2:
             txt = 'CHECKING FOR UPDATES..'
-        elif not time.time() - t > 6:
+        elif not time.time() - t > ts*0.3:
             txt = 'CHECKING FOR UPDATES...'
-        elif not time.time() - t > 8:
+        elif not time.time() - t > ts*0.4:
             txt = 'CHECKING FOR UPDATES.'
-        elif not time.time() - t > 10:
+        elif not time.time() - t > ts*0.5:
             txt = 'CHECKING FOR UPDATES..'
-        elif not time.time() - t > 12:
+        elif not time.time() - t > ts*0.6:
             txt = 'CHECKING FOR UPDATES...'
-        elif not time.time() - t > 14:
+        elif not time.time() - t > ts*0.62:
             txt = 'CHECKING FOR UPDATES.'
-        elif not time.time() - t > 16:
+        elif not time.time() - t > ts*0.7:
             txt = 'CHECKING FOR UPDATES COMPLETED'
-        elif not time.time() - t > 16.5:
+        elif not time.time() - t > ts*0.85:
             txt = 'STARTING LAUNCHER.'
-        elif not time.time() - t > 17:
+        elif not time.time() - t > ts*0.89:
             txt = 'STARTING LAUNCHER..'
-        elif not time.time() - t > 17.5:
+        elif not time.time() - t > ts*0.9:
             txt = 'STARTING LAUNCHER...'
         text.show(txt, (5, 470), (255, 255, 255), 22)
         '# Mouse'
