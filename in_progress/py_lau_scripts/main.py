@@ -22,7 +22,7 @@ class DataSQL:
 		self.database = mysql.connector.connect(
 			host='134.255.217.76',
 			user='launcherdb',
-			passwd='Rj51tt9?',
+			passwd='********,
 			database='launcher'
 		)
 		self.cursor = self.database.cursor()
