@@ -39,7 +39,7 @@ class DataSQL:
         self.cursor = self.database.cursor()
 
     def where(self, i, data):
-        print(i, data, 'Where')
+        # print(i, data, 'Where')
         if data:
             self.cursor.execute(self.commands[i], data)
         else:
@@ -48,19 +48,19 @@ class DataSQL:
         return self.data
 
     def fetchall(self, i, data):
-        print(i, data, 'fetchall')
+        # print(i, data, 'fetchall')
         self.cursor.execute(self.commands[i], data)
         self.data = self.cursor.fetchall()
         return self.data
 
     def fetchone(self, i, data):
-        print(i, data, 'fetchone')
+        # print(i, data, 'fetchone')
         self.cursor.execute(self.commands[i], data)
         self.data = self.cursor.fetchone()
         return self.data
 
     def execute(self, i, data):
-        print(i, data, 'execute')
+        # print(i, data, 'execute')
         try:
             print(self.cursor.execute(self.commands[i], data))
         except Exception as e:
@@ -78,7 +78,7 @@ class Client:
         self.clientsocket = clientsocket
         self.address = address
         self.msg = None
-        self.info_list = ('log_in', 'new_acc')
+        self.info_list = ('log_in', 'new_acc', 'dc')
 
     def start(self):
         cThread = threading.Thread(target=self.get_msg)
@@ -91,21 +91,24 @@ class Client:
         self.clientsocket.send(msg)
 
     def get_msg(self):
-        while True:
-            full_msg = b''
-            new_msg = True
-            msglen = None
+        try:
             while True:
-                msg = self.clientsocket.recv(16)
-                if new_msg:
-                    msglen = int(msg[:self.HEADERSIZE])
-                    new_msg = False
-                full_msg += msg
-                if len(full_msg) - self.HEADERSIZE == msglen:
-                    self.msg = pickle.loads(full_msg[self.HEADERSIZE:])
-                    new_msg = True
-                    full_msg = b""
-                    self.handler()
+                full_msg = b''
+                new_msg = True
+                msglen = None
+                while True:
+                        msg = self.clientsocket.recv(16)
+                        if new_msg:
+                            msglen = int(msg[:self.HEADERSIZE])
+                            new_msg = False
+                        full_msg += msg
+                        if len(full_msg) - self.HEADERSIZE == msglen:
+                            self.msg = pickle.loads(full_msg[self.HEADERSIZE:])
+                            new_msg = True
+                            full_msg = b""
+                            self.handler()
+        except ConnectionResetError as e:
+            print('-#-', e, '-#-')
 
     @staticmethod
     def bytes_to_int(data):
@@ -125,7 +128,6 @@ class Client:
         return result
 
     def handler(self):
-        print(self.address, self.msg)
         if self.msg:
             if self.msg['info'] in self.info_list:
                 if self.msg['info'] == 'new_acc':
@@ -154,8 +156,6 @@ class Client:
         except Exception as e:
             print(e)
             self.send({'data': False})
-        print(type(pwd))
-        print(type(pwd_data_base))
         if pwd != pwd_data_base:
             self.send({'data': False})
         else:
@@ -217,9 +217,9 @@ class Connection:
 
 
 if __name__ == '__main__':
-
     try:
         data_base = DataSQL()
         server = Connection()
     except Exception as e:
         print(e)
+

@@ -56,6 +56,11 @@ def submit():
     global t
     loading_ = True
     # test input
+    if checkbox:
+        #file = open('data.txt', 'wb')
+        #file.write(str(encode(Mail)))
+        #file.close()
+        pass
     if Mail != '' and PASS_l != '':
         if '@' in Mail:
             if time.time() - t >= 0.3:
@@ -76,15 +81,16 @@ def submit_reg():
     global t
     loading = True
     # test input
-    if Mail1 != '' and Name1 != '' and Name2 != '' and PASS != '':
-        if '@' in Mail1:
-            if time.time() - t >= 0.3:
-                t = time.time()
-                loading = False
-                name = Name1 + '_' + Name2
-                mail = Mail1
-                pwd = PASS
-                c_data.new_acc((name, mail, pwd))
+    if checkbox_usk.mode and checkbox_agb.mode:
+        if Mail1 != '' and Name1 != '' and Name2 != '' and PASS != '':
+            if '@' in Mail1:
+                if time.time() - t >= 0.3:
+                    t = time.time()
+                    loading = False
+                    name = Name1 + '_' + Name2
+                    mail = Mail1
+                    pwd = PASS
+                    c_data.new_acc((name, mail, pwd))
 
     else:
         pass
@@ -487,7 +493,7 @@ def start_loding(ts):
 
 class Connection:
     def __init__(self):
-        self.HEADERSIZE = 10
+        self.HEADERSIZE = 253
         self.HOST = '127.0.0.1'
         self.PORT = 62914
         self.msg = None
@@ -1094,7 +1100,7 @@ if __name__ == '__main__':
     tim = time.time()
     while not c_data.msg:
         print('starting in t: ' + str((time.time() - tim) - 10)[:2])
-        # os.system('cls')
+        os.system('cls')
         if time.time() - tim - 10 >= 0:
             print('starting offline ')
             time.sleep(1)
@@ -1107,10 +1113,19 @@ if __name__ == '__main__':
             file.write(c_data.msg['zip'])
             file.close()
     except Exception as e:
-        print('connection error')
+        print('connection error', e)
 
     start_loding(t)
-    print('###')
+    try:
+        file = open('data.txt', 'rb')
+        file_data = decode(pickle.loads(file.read()))
+        file.close()
+        file1 = open('data.txt', 'wb')
+        file1.write(pickle.dumps(encode(file_data)))
+        file1.close()
+    except Exception as en:
+        file_data = ''
+        print(en)
     if c_data.online != 'online':
         c_data.online = 'offline'
     online = c_data.online[:16]
@@ -1207,7 +1222,7 @@ if __name__ == '__main__':
 
     '-------------text_input------------'
     '-------------log_in----------------'
-    text_mail = TextInput()
+    text_mail = TextInput(initial_string=file_data)
     text_mail_pos = (dpa.pro_to_pix((30.23, 32.92)))
     text_name = TextInput(cursor_color=(0, 0, 0))
     text_name_pos = (dpa.pro_to_pix((30.23, 48.7)))
